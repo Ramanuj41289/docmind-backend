@@ -524,3 +524,15 @@ Expose endpoints in `ChatController.java` to support sidebar conversation thread
 2. **Multi-Tenant User Isolation**: Every conversation belongs to a `user_id`. Users cannot inspect or inject messages into other users' conversations.
 3. **Seamless Spring AI Integration**: Uses native `MessageChatMemoryAdvisor`, keeping controller/service code clean and modular.
 4. **Optimized Performance**: Uses composite index `(conversation_id, created_at)` with `LIMIT lastN` to ensure minimal DB latency.
+
+## 8. Consolidated Backend Diagrams
+
+The following Mermaid diagrams have been created to visualise the backend architecture:
+
+- **DTO Schemas** – `dto-class-diagram.png` – shows all DTO records and their relationships.
+- **Entity Relationships & Mappings** – `entity-relationship-diagram.png` – illustrates the JPA entity model and database tables.
+- **Controller-to-Service Control Flow** – `controller-service-flow-diagram.png` – depicts the request flow from security filter through controllers, services, repositories and the OpenAI integration.
+
+These diagrams are included in the generated Word document **ConsolidatedBackendDiagrams_generated.docx** located in the `docs/` folder. Run the helper script `generate_docx.py` (in the same folder) to generate the document.
+
+*They help developers understand data contracts, persistence mappings and runtime flow, supporting maintenance and onboarding.*

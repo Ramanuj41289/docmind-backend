@@ -1,0 +1,10 @@
+{
+  "name": "frontend-root",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npm --prefix docmind-frontend run dev",
+    "build": "npm --prefix docmind-frontend run build",
+    "preview": "npm --prefix docmind-frontend run preview"
+  }
+}

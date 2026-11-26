@@ -1,0 +1,45 @@
+package com.ramanuj.docmind.config;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Configuration
+@ConfigurationProperties(prefix = "app")
+@Getter
+@Setter
+public class AppProperties {
+	
+	
+	private RagProperties rag = new RagProperties();
+	private CorsProperties cors = new CorsProperties();
+	
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class RagProperties{
+		private int chunkSize = 700;
+		private int minChunkSizeChars = 350; 
+		private int minChunkLengthToEmbed = 5;
+		private int maxNumChunks = 10000;
+		//private int chunkOverlap = 100;
+		private int topK = 5;
+		private Double similarityThreshold = 0.0;
+	}
+	
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class CorsProperties{
+		private String allowedOrigin = "*";
+		private String allowedMethods = "GET, POST, PUT, DELETE, OPTIONS";
+		private String allowedHeaders = "*";
+	}
+
+}

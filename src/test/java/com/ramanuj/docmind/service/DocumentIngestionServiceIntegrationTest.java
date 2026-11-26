@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Test;
@@ -98,7 +99,7 @@ class DocumentIngestionServiceIntegrationTest {
 	void ingest_shouldRejectNullParsedDocuments() {
 		User user = createUser("nullcontentuser");
 
-		DocumentMetadata metadata = createDocumentMetadata(user, "null-content.pdf");
+		DocumentMetadata metadata = documentMetadataRepository.saveAndFlush(createDocumentMetadata(user, "null-content.pdf"));
 
 		assertThatThrownBy(() -> documentIngestionService.ingest(metadata, null))
 				.isInstanceOf(DocumentProcessingException.class).hasMessage("No readable content found");
@@ -110,7 +111,7 @@ class DocumentIngestionServiceIntegrationTest {
 	void ingest_shouldRejectEmptyParsedDocuments() {
 		User user = createUser("emptycontentuser");
 
-		DocumentMetadata metadata = createDocumentMetadata(user, "empty-content.pdf");
+		DocumentMetadata metadata = documentMetadataRepository.saveAndFlush(createDocumentMetadata(user, "empty-content.pdf"));
 
 		assertThatThrownBy(() -> documentIngestionService.ingest(metadata, List.of()))
 				.isInstanceOf(DocumentProcessingException.class).hasMessage("No readable content found");
@@ -120,7 +121,7 @@ class DocumentIngestionServiceIntegrationTest {
 
 	@Test
 	void ingest_shouldRejectDocumentWithoutOwner() {
-		DocumentMetadata metadata = DocumentMetadata.builder().filename("owner-missing.pdf")
+		DocumentMetadata metadata = DocumentMetadata.builder().id(UUID.randomUUID()).filename("owner-missing.pdf")
 				.contentType("application/pdf").fileSize(1024L).status(DocumentStatus.UPLOADING)
 				.createdAt(LocalDateTime.now()).build();
 
@@ -138,6 +139,7 @@ class DocumentIngestionServiceIntegrationTest {
 				.email("transientuser@test.com").role(Role.USER).build();
 
 		DocumentMetadata metadata = createDocumentMetadata(user, "transient-owner.pdf");
+		metadata.setId(UUID.randomUUID());
 
 		Document parsedDocument = new Document(createLongDocumentContent());
 

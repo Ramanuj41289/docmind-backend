@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.ai.session.SessionService;
 
 import com.ramanuj.docmind.dto.ChatMessageDto;
 import com.ramanuj.docmind.dto.ConversationDto;
@@ -31,6 +33,9 @@ class ConversationServiceIntegrationTest {
 
 	@Autowired
 	private ConversationService conversationService;
+
+	@MockitoBean
+	private SessionService sessionService;
 
 	@Autowired
 	private TestEntityManager entityManager;

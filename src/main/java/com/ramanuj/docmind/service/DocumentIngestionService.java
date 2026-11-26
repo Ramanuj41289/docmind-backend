@@ -1,4 +1,3 @@
-
 package com.ramanuj.docmind.service;
 
 import java.time.LocalDateTime;
@@ -44,6 +43,8 @@ public class DocumentIngestionService {
 		}
 		UUID documentId = metadata.getId();
 		try {
+			// Added structured logging for key operations
+			logger.info("Starting document ingestion for documentId={}, userId={}", metadata.getId(), metadata.getUser().getId());
 			metadata.setStatus(DocumentStatus.PROCESSING);
 			metadata.setTotalPages(parsedDocs.size());
 			TokenTextSplitter splitter = TokenTextSplitter.builder()
@@ -79,14 +80,18 @@ public class DocumentIngestionService {
 			metadata.setErrorMessage(null);
 			metadata.setUpdatedAt(LocalDateTime.now());
 			documentMetadataRepository.save(metadata);
-			logger.info("Indexed document id={} userId={} chunks={}", documentId, metadata.getUser().getId(), enrichedChunks.size());
+			logger.info("Document ingestion completed for documentId={}, userId={}, totalChunks={}", metadata.getId(), metadata.getUser().getId(), enrichedChunks.size());
 			return enrichedChunks.size();
 		}
 		catch (DocumentProcessingException ex) {
 			throw ex;
 		}
 		catch (Exception ex) {
-			logger.error("Document ingestion failed: {}", documentId, ex);
+			logger.error("Document ingestion failed: documentId={}, userId={}", metadata.getId(), metadata.getUser().getId(), ex);
+			metadata.setStatus(DocumentStatus.FAILED);
+			metadata.setErrorMessage("Document indexing failed");
+			metadata.setUpdatedAt(LocalDateTime.now());
+			documentMetadataRepository.save(metadata);
 			throw new DocumentProcessingException("Failed to index document", ex);
 		}
 	}

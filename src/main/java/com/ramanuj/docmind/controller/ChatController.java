@@ -55,6 +55,9 @@ public class ChatController {
 		throw new AccessDeniedException("Authenticated user is required");
 	}
 
+	// Added structured logging for key operations
+	private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ChatController.class);
+
 	@Operation(summary = "Ask a question", description = "Submits a question to the document assistant and returns an answer with source citations.")
 	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Question answered successfully"),
 			@ApiResponse(responseCode = "400", description = "Invalid request or validation failure", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ApiErrorResponse.class))),
@@ -65,9 +68,13 @@ public class ChatController {
 	@PostMapping("/query")
 	public ResponseEntity<com.ramanuj.docmind.dto.ApiResponse<ChatResponseDto>> askQuestion(
 			@Valid @RequestBody ChatRequestDto request, Authentication authentication) {
+		logger.info("Received askQuestion request for userId={}, conversationId={}", requireUser(authentication).getId(),
+				request.getConversationId());
 
 		ChatResponseDto result = ragService.askQuestion(request, requireUser(authentication));
 
+		logger.info("askQuestion completed for userId={}, conversationId={}", requireUser(authentication).getId(),
+				request.getConversationId());
 		return ResponseEntity.ok(com.ramanuj.docmind.dto.ApiResponse.<ChatResponseDto>builder().success(true)
 				.data(result).timestamp(LocalDateTime.now()).build());
 	}
@@ -83,6 +90,8 @@ public class ChatController {
 	@PostMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public ResponseEntity<Flux<String>> streamQuestion(@Valid @RequestBody ChatRequestDto request,
 			Authentication authentication) {
+		logger.info("Received streamQuestion request for userId={}, conversationId={}", requireUser(authentication).getId(),
+				request.getConversationId());
 
 		if (request.getConversationId() == null || request.getConversationId().isBlank()) {
 			request.setConversationId(UUID.randomUUID().toString());
@@ -90,6 +99,8 @@ public class ChatController {
 
 		Flux<String> stream = ragService.streamQuestionAnswer(request, requireUser(authentication));
 
+		logger.info("streamQuestion initiated for userId={}, conversationId={}", requireUser(authentication).getId(),
+				request.getConversationId());
 		return ResponseEntity.ok().header("X-Conversation-Id", request.getConversationId())
 				.contentType(MediaType.TEXT_EVENT_STREAM).body(stream);
 	}

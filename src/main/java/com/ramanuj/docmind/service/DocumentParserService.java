@@ -1,4 +1,3 @@
-
 package com.ramanuj.docmind.service;
 
 import java.io.IOException;
@@ -38,6 +37,8 @@ public class DocumentParserService {
 
 		try {
 
+			logger.info("Starting document parsing for fileName={}", fileName);
+
 			Resource resource = new ByteArrayResource(file.getBytes()) {
 				@Override
 				public @Nullable String getFilename() {
@@ -45,19 +46,24 @@ public class DocumentParserService {
 				}
 			};
 
+			List<Document> parsedDocuments;
+
 			if (lowerName.endsWith(".pdf") || contentType.equals("application/pdf")) {
 
-				return parsePdf(resource);
-			}
-
-			if (lowerName.endsWith(".docx") || lowerName.endsWith(".doc") || lowerName.endsWith(".txt")
+				parsedDocuments = parsePdf(resource);
+			} else if (lowerName.endsWith(".docx") || lowerName.endsWith(".doc") || lowerName.endsWith(".txt")
 					|| lowerName.endsWith(".md") || lowerName.endsWith(".csv") || contentType.startsWith("text/")) {
 
-				return parseGenericFile(resource);
+				parsedDocuments = parseGenericFile(resource);
+			} else {
+				throw new DocumentProcessingException(
+						"Unsupported file type. Supported formats: PDF, DOC, DOCX, TXT, MD and CSV");
 			}
 
-			throw new DocumentProcessingException(
-					"Unsupported file type. Supported formats: PDF, DOC, DOCX, TXT, MD and CSV");
+			logger.info("Document parsing completed for fileName={}, parsedDocuments={}", fileName,
+					parsedDocuments.size());
+
+			return parsedDocuments;
 
 		} catch (DocumentProcessingException ex) {
 			throw ex;
@@ -70,7 +76,7 @@ public class DocumentParserService {
 
 		} catch (Exception ex) {
 
-			logger.error("Document parsing failed: {}", fileName, ex);
+			logger.error("Document parsing failed for fileName={}", fileName, ex);
 
 			throw new DocumentProcessingException("Could not parse uploaded file", ex);
 		}

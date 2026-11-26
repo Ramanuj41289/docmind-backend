@@ -39,7 +39,8 @@ import com.ramanuj.docmind.exception.ResourceNotFoundException;
 import com.ramanuj.docmind.repository.DocumentMetadataRepository;
 
 @DataJpaTest
-@Import({ DocumentMetadataService.class, DocumentMetadataServiceIntegrationTest.TestConfig.class })
+@Import({ DocumentMetadataService.class, DocumentMetadataPersistenceService.class,
+		DocumentMetadataServiceIntegrationTest.TestConfig.class })
 class DocumentMetadataServiceIntegrationTest {
 
 	@TestConfiguration

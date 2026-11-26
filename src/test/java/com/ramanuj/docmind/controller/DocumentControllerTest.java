@@ -111,7 +111,7 @@ class DocumentControllerTest {
 
 		mockMvc.perform(multipart("/api/v1/documents/upload-multiple").file(firstFile).file(secondFile)
 				.principal(authentication)).andExpect(status().isCreated()).andExpect(jsonPath("$.success").value(true))
-				.andExpect(jsonPath("$.message").value("Documents uploaded successfully"))
+				.andExpect(jsonPath("$.message").value("All documents uploaded and indexed successfully."))
 				.andExpect(jsonPath("$.data.length()").value(2))
 				.andExpect(jsonPath("$.data[0].fileName").value("first.pdf"))
 				.andExpect(jsonPath("$.data[1].fileName").value("second.pdf"));

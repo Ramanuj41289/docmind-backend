@@ -38,6 +38,9 @@ public class DocumentMetadataService {
 
 	public DocumentResponseDto uploadAndProcess(MultipartFile file, User user) {
 		validateUser(user);
+		if (file == null || file.isEmpty()) {
+			throw new IllegalArgumentException("File is required and must not be empty");
+		}
 		return processUpload(file, user, false);
 	}
 

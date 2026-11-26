@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.ai.session.SessionService;
 
 import com.ramanuj.docmind.dto.ChatMessageDto;
 import com.ramanuj.docmind.dto.ConversationDto;
@@ -39,6 +40,9 @@ class ConversationServiceTest {
 
 	@Mock
 	private ChatMessageRepository chatMessageRepository;
+
+	@Mock
+	private SessionService sessionService;
 
 	@InjectMocks
 	private ConversationService conversationService;

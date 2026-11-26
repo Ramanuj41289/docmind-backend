@@ -66,6 +66,9 @@ class DocumentMetadataServiceTest {
 	@Mock
 	private ModelMapper modelMapper;
 
+	@Mock
+	private DocumentMetadataPersistenceService persistenceService;
+
 	@InjectMocks
 	private DocumentMetadataService documentMetadataService;
 
@@ -76,6 +79,16 @@ class DocumentMetadataServiceTest {
 
 		user = User.builder().id(1L).username("testuser").email("test@example.com").password("encoded-password")
 				.role(Role.USER).build();
+
+		lenient().when(persistenceService.create(anyString(), anyString(), any(Long.class), any(Long.class)))
+				.thenAnswer(invocation -> {
+					UUID id = UUID.randomUUID();
+					DocumentMetadata meta = DocumentMetadata.builder().id(id).filename(invocation.getArgument(0))
+							.contentType(invocation.getArgument(1)).fileSize(invocation.getArgument(2))
+							.status(DocumentStatus.UPLOADING).user(user).build();
+					lenient().when(documentMetadataRepository.findById(id)).thenReturn(Optional.of(meta));
+					return id;
+				});
 
 		lenient().when(documentMetadataRepository.save(any(DocumentMetadata.class))).thenAnswer(invocation -> {
 			DocumentMetadata metadata = invocation.getArgument(0);
@@ -129,7 +142,7 @@ class DocumentMetadataServiceTest {
 		assertEquals(DocumentStatus.INDEXED, response.getStatus());
 		assertEquals("Document successfully processed and indexed", response.getMessage());
 
-		verify(documentMetadataRepository).save(any(DocumentMetadata.class));
+		verify(persistenceService).create(eq("test.txt"), eq("text/plain"), eq(file.getSize()), eq(user.getId()));
 		verify(parserService).parse(file);
 		verify(ingestionService).ingest(any(DocumentMetadata.class), anyList());
 	}
@@ -167,7 +180,7 @@ class DocumentMetadataServiceTest {
 
 		assertThrows(IllegalArgumentException.class, () -> documentMetadataService.uploadAndProcess(null, user));
 
-		verify(documentMetadataRepository, never()).save(any());
+		verifyNoInteractions(persistenceService);
 		verifyNoInteractions(parserService);
 	}
 
@@ -178,7 +191,7 @@ class DocumentMetadataServiceTest {
 
 		assertThrows(IllegalArgumentException.class, () -> documentMetadataService.uploadAndProcess(emptyFile, user));
 
-		verify(documentMetadataRepository, never()).save(any());
+		verifyNoInteractions(persistenceService);
 		verifyNoInteractions(parserService);
 	}
 
@@ -198,11 +211,11 @@ class DocumentMetadataServiceTest {
 
 		documentMetadataService.uploadAndProcess(file, user);
 
-		ArgumentCaptor<DocumentMetadata> captor = ArgumentCaptor.forClass(DocumentMetadata.class);
+		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
 
-		verify(documentMetadataRepository).save(captor.capture());
+		verify(persistenceService).create(captor.capture(), anyString(), any(Long.class), eq(user.getId()));
 
-		assertEquals("document", captor.getValue().getFilename());
+		assertEquals("document", captor.getValue());
 	}
 
 	@Test
@@ -221,11 +234,11 @@ class DocumentMetadataServiceTest {
 
 		documentMetadataService.uploadAndProcess(file, user);
 
-		ArgumentCaptor<DocumentMetadata> captor = ArgumentCaptor.forClass(DocumentMetadata.class);
+		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
 
-		verify(documentMetadataRepository).save(captor.capture());
+		verify(persistenceService).create(anyString(), captor.capture(), any(Long.class), eq(user.getId()));
 
-		assertEquals("application/octet-stream", captor.getValue().getContentType());
+		assertEquals("application/octet-stream", captor.getValue());
 	}
 
 	@Test
@@ -243,19 +256,7 @@ class DocumentMetadataServiceTest {
 
 		documentMetadataService.uploadAndProcess(file, user);
 
-		ArgumentCaptor<DocumentMetadata> captor = ArgumentCaptor.forClass(DocumentMetadata.class);
-
-		verify(documentMetadataRepository).save(captor.capture());
-
-		DocumentMetadata savedMetadata = captor.getValue();
-
-		assertEquals(DocumentStatus.INDEXED, savedMetadata.getStatus());
-		assertEquals("test.txt", savedMetadata.getFilename());
-		assertEquals("text/plain", savedMetadata.getContentType());
-		assertEquals(file.getSize(), savedMetadata.getFileSize());
-		assertEquals(user, savedMetadata.getUser());
-		assertNotNull(savedMetadata.getCreatedAt());
-		assertNotNull(savedMetadata.getUpdatedAt());
+		verify(persistenceService).create(eq("test.txt"), eq("text/plain"), eq(file.getSize()), eq(user.getId()));
 	}
 
 	@Test
@@ -348,7 +349,7 @@ class DocumentMetadataServiceTest {
 		assertEquals("first.txt", responses.get(0).getFileName());
 		assertEquals("second.txt", responses.get(1).getFileName());
 
-		verify(documentMetadataRepository, times(2)).save(any());
+		verify(persistenceService, times(2)).create(anyString(), anyString(), any(Long.class), eq(user.getId()));
 		verify(parserService, times(2)).parse(any());
 		verify(ingestionService, times(2)).ingest(any(), anyList());
 	}

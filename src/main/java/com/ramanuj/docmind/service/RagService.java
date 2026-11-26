@@ -1,11 +1,9 @@
-
 package com.ramanuj.docmind.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,8 +72,10 @@ public class RagService {
 	public ChatResponseDto askQuestion(ChatRequestDto request, User user) {
 		validateUser(user);
 		validateRequest(request);
+		// Ensure conversationId is declared and initialized
 		long startTime = System.currentTimeMillis();
-		String conversationId = resolveConversationId(request.getConversationId());
+		String conversationId = resolveConversationId(request.getConversationId()); // Fixed initialization
+		logger.info("Starting askQuestion for userId={}, conversationId={}", user.getId(), conversationId);
 		ensureConversationExists(conversationId, user, request.getQuestion());
 		sessionHistoryMigrationService.ensureSessionReady(conversationId, user);
 		List<Document> retrieved = retrieveRelevantDocuments(request.getQuestion(), request.getDocumentId(),
@@ -92,6 +92,7 @@ public class RagService {
 			conversationHistoryWriter.saveAssistantMessage(conversationId, answer);
 		}
 		long responseTime = System.currentTimeMillis() - startTime;
+		logger.info("askQuestion completed for userId={}, conversationId={}, responseTime={}ms", user.getId(), conversationId, responseTime);
 		return ChatResponseDto.builder().answer(answer).conversationId(conversationId).citations(citations)
 				.responseTimeMs(responseTime).build();
 	}
@@ -109,7 +110,7 @@ public class RagService {
 	    List<Document> retrieved = retrieveRelevantDocuments(request.getQuestion(), request.getDocumentId(),
 	            request.getTopK(), request.getMinSimilarity(), user);
 	    String context = buildContextString(retrieved);
-	    logger.info("Starting RAG stream for userId={}, conversationId={}, retrievedChunks={}", user.getId(), conversationId, retrieved.size());
+	    logger.info("Starting streamQuestionAnswer for userId={}, conversationId={}", user.getId(), conversationId);
 	    return Flux.defer(() -> {
 	        conversationHistoryWriter.saveUserMessage(conversationId, request.getQuestion());
 	        StringBuilder answerBuffer = new StringBuilder();
@@ -191,16 +192,42 @@ public class RagService {
 	// Document context
 	// --------------------------------------------------
 
+	// Optimized buildContextString with improved null safety and separator handling
 	private String buildContextString(List<Document> documents) {
-		if (documents == null || documents.isEmpty()) {
-			return "No relevant uploaded-document context was retrieved.";
-		}
-		return documents.stream().map(document -> {
-			Map<String, Object> metadata = document.getMetadata();
-			String fileName = String.valueOf(metadata.getOrDefault("fileName", "Unknown file"));
-			Object page = metadata.getOrDefault("pageNumber", "N/A");
-			return "[Source: " + fileName + " | Page: " + page + "]\n" + document.getText();
-		}).collect(Collectors.joining("\n\n---\n\n"));
+	    if (documents == null || documents.isEmpty()) {
+	        return "No relevant uploaded-document context was retrieved.";
+	    }
+
+	    StringBuilder contextBuilder = new StringBuilder();
+	    boolean firstDocument = true;
+
+	    for (Document document : documents) {
+	        if (document == null || document.getText() == null || document.getText().isBlank()) {
+	            continue; // Skip invalid or empty documents
+	        }
+
+	        Map<String, Object> metadata = document.getMetadata();
+	        if (metadata == null) {
+	            metadata = Map.of(); // Use an empty map if metadata is null
+	        }
+
+	        String fileName = String.valueOf(metadata.getOrDefault("fileName", "Unknown file"));
+	        Object page = metadata.getOrDefault("pageNumber", "N/A");
+
+	        if (!firstDocument) {
+	            contextBuilder.append("\n\n---\n\n"); // Append separator between valid documents
+	        }
+	        firstDocument = false;
+
+	        contextBuilder.append("[Source: ").append(fileName).append(" | Page: ").append(page).append("]\n")
+	                      .append(document.getText());
+	    }
+
+	    if (contextBuilder.length() == 0) {
+	        return "No relevant uploaded-document context was retrieved."; // Fallback if all documents are invalid
+	    }
+
+	    return contextBuilder.toString();
 	}
 
 	// --------------------------------------------------

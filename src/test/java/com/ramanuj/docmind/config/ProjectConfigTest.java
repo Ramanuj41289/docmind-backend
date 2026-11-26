@@ -8,6 +8,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -68,7 +70,7 @@ class ProjectConfigTest {
 	    assertThat(result).isNotNull();
 	    assertThat(result).isSameAs(chatClient);
 	    verify(builder).defaultSystem(anyString());
-	    verify(builder).defaultAdvisors(ArgumentMatchers.any(Advisor[].class));
+	    verify(builder).defaultAdvisors(ArgumentMatchers.<List<Advisor>>any());
 	    verify(builder).build();
 	}
 }

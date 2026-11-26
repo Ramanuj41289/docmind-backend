@@ -60,25 +60,29 @@ public class ConversationService {
 	}
 
 	private void registerSessionCleanup(String conversationId) {
-		if (!TransactionSynchronizationManager.isSynchronizationActive()) {
-			throw new IllegalStateException("Transaction synchronization is not active");
-		}
-		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+		if (TransactionSynchronizationManager.isSynchronizationActive()) {
+			TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
 
-			@Override
-			public void afterCommit() {
-				try {
-					var session = sessionService.findById(conversationId);
-					if (session != null) {
-						sessionService.delete(conversationId);
-					}
-
-				} catch (Exception ex) {
-					log.error("Failed to delete Session Memory after " + "conversation deletion: conversationId={}",
-							conversationId, ex);
+				@Override
+				public void afterCommit() {
+					cleanupSession(conversationId);
 				}
+			});
+		} else {
+			cleanupSession(conversationId);
+		}
+	}
+
+	private void cleanupSession(String conversationId) {
+		try {
+			var session = sessionService.findById(conversationId);
+			if (session != null) {
+				sessionService.delete(conversationId);
 			}
-		});
+		} catch (Exception ex) {
+			log.error("Failed to delete Session Memory after conversation deletion: conversationId={}",
+					conversationId, ex);
+		}
 	}
 
 	private Conversation findOwnedConversation(String conversationId, User user) {

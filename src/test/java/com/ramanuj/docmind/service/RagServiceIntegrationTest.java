@@ -57,6 +57,12 @@ class RagServiceIntegrationTest {
 	@MockitoBean
 	private ChatClient chatClient;
 
+	@MockitoBean
+	private SessionHistoryMigrationService sessionHistoryMigrationService;
+
+	@MockitoBean
+	private ConversationHistoryWriter conversationHistoryWriter;
+
 	private User user;
 	private User anotherUser;
 	private DocumentMetadata documentMetadata;
@@ -301,8 +307,8 @@ class RagServiceIntegrationTest {
 
 		ChatRequestDto request = ChatRequestDto.builder().question("Summarize the document").build();
 
-		assertThatThrownBy(() -> ragService.streamQuestionAnswer(request, user)).isInstanceOf(RuntimeException.class)
-				.hasMessage("Mocked ChatClient boundary");
+		assertThatThrownBy(() -> ragService.streamQuestionAnswer(request, user).blockFirst())
+				.isInstanceOf(RuntimeException.class).hasMessage("Mocked ChatClient boundary");
 
 		List<Conversation> conversations = conversationRepository.findByUserOrderByUpdatedAtDesc(user);
 
@@ -327,8 +333,8 @@ class RagServiceIntegrationTest {
 		ChatRequestDto request = ChatRequestDto.builder().conversationId(existingConversation.getId())
 				.question("Continue streaming discussion").build();
 
-		assertThatThrownBy(() -> ragService.streamQuestionAnswer(request, user)).isInstanceOf(RuntimeException.class)
-				.hasMessage("Mocked ChatClient boundary");
+		assertThatThrownBy(() -> ragService.streamQuestionAnswer(request, user).blockFirst())
+				.isInstanceOf(RuntimeException.class).hasMessage("Mocked ChatClient boundary");
 
 		assertThat(conversationRepository.findByUserOrderByUpdatedAtDesc(user)).hasSize(1);
 	}

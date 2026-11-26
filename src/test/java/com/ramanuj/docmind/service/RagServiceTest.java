@@ -34,7 +34,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -459,7 +458,7 @@ class RagServiceTest {
 
 	private void verifySessionAdvisorInvocation() {
 		verify(chatClient.prompt().system(ArgumentMatchers.<Consumer<ChatClient.PromptSystemSpec>>any())
-				.user(anyString()), times(2)).advisors(any(Advisor[].class));
+				.user(anyString()), times(2)).advisors(ArgumentMatchers.<Consumer<ChatClient.AdvisorSpec>>any());
 	}
 
 	// --------------------------------------------------
@@ -517,11 +516,11 @@ class RagServiceTest {
 
 	private void stubChatResponse(String answer) {
 		when(chatClient.prompt().system(ArgumentMatchers.<Consumer<ChatClient.PromptSystemSpec>>any()).user(anyString())
-				.advisors(any(Advisor[].class)).call().content()).thenReturn(answer);
+				.advisors(ArgumentMatchers.<Consumer<ChatClient.AdvisorSpec>>any()).call().content()).thenReturn(answer);
 	}
 
 	private void stubChatStream(Flux<String> response) {
 		when(chatClient.prompt().system(ArgumentMatchers.<Consumer<ChatClient.PromptSystemSpec>>any()).user(anyString())
-				.advisors(any(Advisor[].class)).stream().content()).thenReturn(response);
+				.advisors(ArgumentMatchers.<Consumer<ChatClient.AdvisorSpec>>any()).stream().content()).thenReturn(response);
 	}
 }

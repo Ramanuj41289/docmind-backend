@@ -294,7 +294,7 @@ export const docmindApi = {
   },
 
   async getDocument(
-    id: number
+    id: string
   ): Promise<DocMindDocument> {
     return unwrap<DocMindDocument>(
       await api.get(`/api/v1/documents/${id}`)
@@ -356,7 +356,7 @@ export const docmindApi = {
     return unwrap<DocMindDocument[]>(response) || [];
   },
 
-  async deleteDocument(id: number): Promise<unknown> {
+  async deleteDocument(id: string): Promise<unknown> {
     return unwrap<unknown>(
       await api.delete(`/api/v1/documents/${id}`)
     );

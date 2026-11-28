@@ -14,8 +14,9 @@ export interface AuthResult {
   username: string;
 }
 
+// Document ID is a UUID string (matches backend UUID type)
 export interface Document {
-  id: number;
+  id: string;
   filename?: string;
   fileName?: string;
   contentType?: string;
@@ -63,9 +64,10 @@ export interface StoredChatMessage {
   createdAt: string;
 }
 
+// documentId is a UUID string (matches backend UUID type)
 export interface ChatRequest {
   question: string;
-  documentId: number | null;
+  documentId: string | null;
   topK?: number;
   minSimilarity?: number;
   conversationId: string | null;
@@ -84,15 +86,16 @@ export interface StreamMetadata {
   requestId?: string | null;
 }
 
+// documentId is a UUID string (matches backend UUID type)
 export interface SearchRequest {
   query: string;
-  documentId?: number | null;
+  documentId?: string | null;
   topK?: number;
   similaritySearch?: number;
 }
 
 export interface SearchMatch {
-  documentId: number;
+  documentId: string; // UUID from backend
   fileName?: string;
   chunkIndex?: number;
   pageNumber?: number;

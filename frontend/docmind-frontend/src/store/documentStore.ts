@@ -11,7 +11,7 @@ interface DocumentState {
 
   fetchDocuments: () => Promise<Document[]>;
   selectDocument: (document: Document | null) => void;
-  deleteDocument: (id: number) => Promise<void>;
+  deleteDocument: (id: string) => Promise<void>;
   clearDocuments: () => void;
 }
 

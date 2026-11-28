@@ -22,6 +22,14 @@ const api = axios.create({
   timeout: 120000,
 });
 
+const createRequestId = (): string => {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+
+  return `req-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+};
+
 type UnauthorizedCallback = (() => void) | null;
 
 let onUnauthorizedCallback: UnauthorizedCallback = null;
@@ -94,6 +102,8 @@ api.interceptors.request.use((config) => {
       config.headers.set('Authorization', `Bearer ${token}`);
     }
   }
+
+  config.headers.set('X-Request-Id', createRequestId());
 
   return config;
 });
@@ -439,12 +449,19 @@ export const docmindApi = {
 
   async updateUserRole(
     userId: number,
-    role: UserRole
+    role: UserRole,
+    approvalConfirmed?: boolean
   ): Promise<User> {
     return unwrap<User>(
       await api.patch(
         `/api/v1/admin/users/${userId}/role`,
-        { role }
+        {
+          role,
+          approvalConfirmed:
+            approvalConfirmed === undefined
+              ? null
+              : approvalConfirmed,
+        }
       )
     );
   },
@@ -489,6 +506,7 @@ export const docmindApi = {
       import.meta.env.VITE_API_BASE_URL || '';
 
     const authToken = getAuthToken();
+    const requestId = createRequestId();
 
     const response = await fetch(
       `${baseURL}/api/v1/chat/stream`,
@@ -499,6 +517,7 @@ export const docmindApi = {
           ...(authToken
             ? { Authorization: `Bearer ${authToken}` }
             : {}),
+          'X-Request-Id': requestId,
         },
         body: JSON.stringify({
           question,
@@ -596,6 +615,8 @@ export const docmindApi = {
 
     const metadata: StreamMetadata = {
       conversationId: nextConversationId,
+      requestId:
+        response.headers.get('X-Request-Id') || requestId,
     };
 
     onDone?.(metadata);

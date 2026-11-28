@@ -2,6 +2,7 @@
 package com.ramanuj.docmind.config;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,8 @@ import lombok.RequiredArgsConstructor;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+	private static final String REQUEST_ID_HEADER = "X-Request-Id";
+	private static final String REQUEST_ID_ATTR = "requestId";
 
 	private final JwtService jwtService;
 	private final CustomUserDetailService userDetailService;
@@ -34,6 +37,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
+
+		String requestId = request.getHeader(REQUEST_ID_HEADER);
+		if (requestId == null || requestId.isBlank()) {
+			requestId = UUID.randomUUID().toString();
+		}
+		request.setAttribute(REQUEST_ID_ATTR, requestId);
+		response.setHeader(REQUEST_ID_HEADER, requestId);
 
 		String authHeader = request.getHeader("Authorization");
 
@@ -68,13 +78,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 			SecurityContextHolder.clearContext();
 
-			logger.debug("Invalid JWT token: {}", ex.getClass().getSimpleName());
+			logger.debug("Invalid JWT token: {}, requestId={}", ex.getClass().getSimpleName(), requestId);
 
 		} catch (org.springframework.security.core.userdetails.UsernameNotFoundException ex) {
 
 			SecurityContextHolder.clearContext();
 
-			logger.debug("JWT subject no longer exists");
+			logger.debug("JWT subject no longer exists, requestId={}", requestId);
 		}
 
 		filterChain.doFilter(request, response);

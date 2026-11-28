@@ -46,6 +46,7 @@ export interface ChatMessage {
   pending?: boolean;
   error?: boolean;
   responseTimeMs?: number;
+  evalMetadata?: Record<string, unknown>;
 }
 
 export interface Conversation {
@@ -75,10 +76,12 @@ export interface ChatResponse {
   conversationId?: string;
   citations?: Citation[];
   responseTimeMs?: number;
+  evalMetadata?: Record<string, unknown>;
 }
 
 export interface StreamMetadata {
   conversationId: string | null;
+  requestId?: string | null;
 }
 
 export interface SearchRequest {

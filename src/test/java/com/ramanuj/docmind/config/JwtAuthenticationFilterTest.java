@@ -2,6 +2,7 @@
 package com.ramanuj.docmind.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -121,6 +122,26 @@ class JwtAuthenticationFilterTest {
 		verifyNoInteractions(jwtService);
 		verifyNoInteractions(userDetailService);
 		verify(filterChain).doFilter(request, response);
+		assertNotNull(response.getHeader("X-Request-Id"));
+		assertEquals(response.getHeader("X-Request-Id"), request.getAttribute("requestId"));
+	}
+
+	@Test
+	void doFilter_shouldPropagateIncomingRequestId() throws ServletException, IOException {
+		request.addHeader("X-Request-Id", "req-123");
+		jwtAuthenticationFilter.doFilter(request, response, filterChain);
+		assertEquals("req-123", response.getHeader("X-Request-Id"));
+		assertEquals("req-123", request.getAttribute("requestId"));
+	}
+
+	@Test
+	void doFilter_shouldGenerateRequestIdWhenIncomingIsBlank() throws ServletException, IOException {
+		request.addHeader("X-Request-Id", "   ");
+		jwtAuthenticationFilter.doFilter(request, response, filterChain);
+		String generated = response.getHeader("X-Request-Id");
+		assertNotNull(generated);
+		assertFalse(generated.isBlank());
+		assertEquals(generated, request.getAttribute("requestId"));
 	}
 
 	@Test

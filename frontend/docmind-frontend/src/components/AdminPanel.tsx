@@ -96,9 +96,29 @@ export default function AdminPanel({
 
         setUpdatingId(user.id);
 
+        const currentRole = String(user.role || 'USER').toUpperCase();
+        const nextRole = String(role).toUpperCase();
+        const highRiskChange = currentRole === 'ADMIN' || nextRole === 'ADMIN';
+
+        const approvalConfirmed = highRiskChange
+            ? window.confirm(
+                `Confirm high-risk role update for ${user.username} (${currentRole} -> ${nextRole})?`
+            )
+            : undefined;
+
+        if (highRiskChange && !approvalConfirmed) {
+            setUpdatingId(null);
+            showToast('Role update cancelled.', 'info');
+            return;
+        }
+
         try {
 
-            await docmindApi.updateUserRole(user.id, role);
+            await docmindApi.updateUserRole(
+                user.id,
+                role,
+                approvalConfirmed
+            );
 
             setUsers((items) =>
                 items.map((item) =>

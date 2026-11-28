@@ -46,6 +46,16 @@ interface ChatAreaMessage extends Omit<ChatMessage, 'citations'> {
     citations?: ChatCitation[];
 }
 
+const toNumber = (value: unknown): number | null => {
+    return typeof value === 'number' && Number.isFinite(value)
+        ? value
+        : null;
+};
+
+const toBoolean = (value: unknown): boolean | null => {
+    return typeof value === 'boolean' ? value : null;
+};
+
 interface ChatAreaProps {
     messages: ChatAreaMessage[];
     onSendMessage: (message: string) => void;
@@ -429,11 +439,29 @@ export default function ChatArea({
                                                 {/* Bottom Actions */}
                                                 <div className="flex items-center justify-between pt-2 text-[11px] text-slate-500">
 
-                                                    {msg.responseTimeMs && (
-                                                        <span>
-                                                            Synthesized in {msg.responseTimeMs} ms
-                                                        </span>
-                                                    )}
+                                                    <div className="flex items-center gap-3">
+                                                        {msg.responseTimeMs && (
+                                                            <span>
+                                                                Synthesized in {msg.responseTimeMs} ms
+                                                            </span>
+                                                        )}
+
+                                                        {msg.evalMetadata && (() => {
+                                                            const retrieved = toNumber(msg.evalMetadata.retrievedChunkCount);
+                                                            const citations = toNumber(msg.evalMetadata.citationCount);
+                                                            const grounded = toBoolean(msg.evalMetadata.hasGrounding);
+
+                                                            return (
+                                                                <span className="text-slate-500">
+                                                                    {retrieved !== null ? `${retrieved} chunks` : ''}
+                                                                    {retrieved !== null && citations !== null ? ' | ' : ''}
+                                                                    {citations !== null ? `${citations} citations` : ''}
+                                                                    {(retrieved !== null || citations !== null) && grounded !== null ? ' | ' : ''}
+                                                                    {grounded !== null ? (grounded ? 'grounded' : 'low-grounding') : ''}
+                                                                </span>
+                                                            );
+                                                        })()}
+                                                    </div>
 
                                                     <div className="ml-auto flex items-center gap-1">
 

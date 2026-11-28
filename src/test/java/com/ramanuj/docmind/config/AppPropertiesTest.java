@@ -18,6 +18,8 @@ class AppPropertiesTest {
 
 		assertNotNull(properties.getRag());
 		assertNotNull(properties.getCors());
+		assertNotNull(properties.getEval());
+		assertNotNull(properties.getHitl());
 
 		assertEquals(700, properties.getRag().getChunkSize());
 		assertEquals(350, properties.getRag().getMinChunkSizeChars());
@@ -29,6 +31,8 @@ class AppPropertiesTest {
 		assertEquals("*", properties.getCors().getAllowedOrigin());
 		assertEquals("GET, POST, PUT, DELETE, OPTIONS", properties.getCors().getAllowedMethods());
 		assertEquals("*", properties.getCors().getAllowedHeaders());
+		assertEquals(true, properties.getEval().isIncludeMetadata());
+		assertEquals(false, properties.getHitl().isRequireAdminRoleUpdateApproval());
 	}
 
 	@Test
@@ -105,6 +109,18 @@ class AppPropertiesTest {
 		assertEquals("GET, POST, OPTIONS", properties.getCors().getAllowedMethods());
 
 		assertEquals("*", properties.getCors().getAllowedHeaders());
+	}
+
+	@Test
+	void appProperties_shouldBindEvalAndHitlProperties() {
+
+		MockEnvironment environment = new MockEnvironment().withProperty("app.eval.include-metadata", "false")
+				.withProperty("app.hitl.require-admin-role-update-approval", "true");
+
+		AppProperties properties = Binder.get(environment).bind("app", Bindable.of(AppProperties.class)).get();
+
+		assertEquals(false, properties.getEval().isIncludeMetadata());
+		assertEquals(true, properties.getHitl().isRequireAdminRoleUpdateApproval());
 	}
 
 	@Test

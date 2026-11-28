@@ -292,6 +292,30 @@ class RagServiceTest {
 		verify(conversationHistoryWriter, never()).saveAssistantMessage(anyString(), anyString());
 	}
 
+	@Test
+	void askQuestion_shouldIncludeEvalMetadataByDefault() {
+		when(vectorStore.similaritySearch(any(SearchRequest.class))).thenReturn(List.of());
+		stubNewConversation();
+		stubChatResponse("No relevant information was found.");
+		ChatRequestDto request = ChatRequestDto.builder().question("Explain the company").build();
+		var response = ragService.askQuestion(request, user);
+		assertNotNull(response.getEvalMetadata());
+		assertEquals(0, response.getEvalMetadata().get("retrievedChunkCount"));
+		assertEquals(0, response.getEvalMetadata().get("citationCount"));
+		assertEquals(false, response.getEvalMetadata().get("hasGrounding"));
+	}
+
+	@Test
+	void askQuestion_shouldSkipEvalMetadataWhenDisabled() {
+		appProperties.getEval().setIncludeMetadata(false);
+		when(vectorStore.similaritySearch(any(SearchRequest.class))).thenReturn(List.of());
+		stubNewConversation();
+		stubChatResponse("Answer");
+		ChatRequestDto request = ChatRequestDto.builder().question("Explain the company").build();
+		var response = ragService.askQuestion(request, user);
+		assertNull(response.getEvalMetadata());
+	}
+
 	// --------------------------------------------------
 	// Streaming chat tests
 	// --------------------------------------------------

@@ -14,11 +14,11 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
 
+import com.ramanuj.docmind.config.AppProperties;
 import com.ramanuj.docmind.dto.AdminStatusDto;
 import com.ramanuj.docmind.dto.UpdateUserRoleRequest;
 import com.ramanuj.docmind.dto.UserDto;
@@ -34,7 +34,9 @@ class AdminServiceTest {
     @Mock
     private UserRepository userRepository;
 
-    @InjectMocks
+    @Mock
+    private AppProperties appProperties;
+
     private AdminService adminService;
 
     private User admin;
@@ -42,6 +44,8 @@ class AdminServiceTest {
 
     @BeforeEach
     void setUp() {
+		adminService = new AdminService(userRepository, appProperties);
+
         admin = User.builder()
                 .id(1L)
                 .username("admin")
@@ -100,6 +104,7 @@ class AdminServiceTest {
 
     @Test
     void updateUserRoleShouldPromoteUserToAdmin() {
+		stubHitl(false);
         when(userRepository.findById(2L))
                 .thenReturn(Optional.of(regularUser));
 
@@ -115,6 +120,7 @@ class AdminServiceTest {
 
     @Test
     void updateUserRoleShouldNotSaveWhenRoleIsUnchanged() {
+		stubHitl(false);
         when(userRepository.findById(2L))
                 .thenReturn(Optional.of(regularUser));
 
@@ -127,6 +133,7 @@ class AdminServiceTest {
 
     @Test
     void updateUserRoleShouldPreventDemotionOfLastAdmin() {
+		stubHitl(false);
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(admin));
 
@@ -146,6 +153,7 @@ class AdminServiceTest {
 
     @Test
     void updateUserRoleShouldAllowDemotionWhenMultipleAdminsExist() {
+		stubHitl(false);
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(admin));
 
@@ -174,6 +182,31 @@ class AdminServiceTest {
         verify(userRepository, never()).save(any(User.class));
     }
 
+  @Test
+  void updateUserRoleShouldRequireApprovalForHighRiskChangeWhenEnabled() {
+    stubHitl(true);
+
+    when(userRepository.findById(2L)).thenReturn(Optional.of(regularUser));
+
+    ConflictException exception = assertThrows(ConflictException.class,
+        () -> adminService.updateUserRole(2L, new UpdateUserRoleRequest(Role.ADMIN, false)));
+
+    assertEquals("Approval is required for high-risk role changes", exception.getMessage());
+    verify(userRepository, never()).save(any(User.class));
+  }
+
+  @Test
+  void updateUserRoleShouldAllowHighRiskChangeWhenApproved() {
+    stubHitl(true);
+
+    when(userRepository.findById(2L)).thenReturn(Optional.of(regularUser));
+    when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+    UserDto result = adminService.updateUserRole(2L, new UpdateUserRoleRequest(Role.ADMIN, true));
+    assertEquals(Role.ADMIN, result.role());
+    verify(userRepository).save(regularUser);
+  }
+
     @Test
     void getStatsShouldReturnCorrectCounts() {
         when(userRepository.count()).thenReturn(5L);
@@ -186,4 +219,10 @@ class AdminServiceTest {
         assertEquals(2L, result.totalAdmins());
         assertEquals(3L, result.totalRegularUsers());
     }
+
+  private void stubHitl(boolean enabled) {
+    AppProperties.HitlProperties hitlProperties = new AppProperties.HitlProperties();
+    hitlProperties.setRequireAdminRoleUpdateApproval(enabled);
+    when(appProperties.getHitl()).thenReturn(hitlProperties);
+  }
 }

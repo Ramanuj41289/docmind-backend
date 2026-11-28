@@ -2,6 +2,7 @@
 package com.ramanuj.docmind.dto;
 
 import java.util.List;
+import java.util.Map;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -44,4 +45,9 @@ public class ChatResponseDto {
         example = "842"
     )
     private Long responseTimeMs;
+
+    @Schema(
+        description = "Optional runtime evaluation metadata for quality and observability signals."
+    )
+    private Map<String, Object> evalMetadata;
 }

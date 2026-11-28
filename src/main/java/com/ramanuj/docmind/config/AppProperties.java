@@ -17,6 +17,8 @@ public class AppProperties {
 	
 	private RagProperties rag = new RagProperties();
 	private CorsProperties cors = new CorsProperties();
+	private EvalProperties eval = new EvalProperties();
+	private HitlProperties hitl = new HitlProperties();
 	
 	@Getter
 	@Setter
@@ -40,6 +42,22 @@ public class AppProperties {
 		private String allowedOrigin = "*";
 		private String allowedMethods = "GET, POST, PUT, DELETE, OPTIONS";
 		private String allowedHeaders = "*";
+	}
+
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class EvalProperties {
+		private boolean includeMetadata = true;
+	}
+
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class HitlProperties {
+		private boolean requireAdminRoleUpdateApproval = false;
 	}
 
 }

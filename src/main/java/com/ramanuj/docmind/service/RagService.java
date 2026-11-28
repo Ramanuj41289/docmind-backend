@@ -93,8 +93,11 @@ public class RagService {
 		}
 		long responseTime = System.currentTimeMillis() - startTime;
 		logger.info("askQuestion completed for userId={}, conversationId={}, responseTime={}ms", user.getId(), conversationId, responseTime);
+		Map<String, Object> evalMetadata = appProperties.getEval().isIncludeMetadata()
+				? buildEvalMetadata(retrieved, citations, answer, responseTime)
+				: null;
 		return ChatResponseDto.builder().answer(answer).conversationId(conversationId).citations(citations)
-				.responseTimeMs(responseTime).build();
+				.responseTimeMs(responseTime).evalMetadata(evalMetadata).build();
 	}
 
 	// --------------------------------------------------
@@ -290,5 +293,16 @@ public class RagService {
 			logger.error("Vector similarity search failed for userId={}", user.getId(), ex);
 			throw new VectorSearchException("Vector search failed", ex);
 		}
+	}
+
+	private Map<String, Object> buildEvalMetadata(List<Document> retrieved, List<CitationDto> citations, String answer,
+			long responseTimeMs) {
+		int retrievedChunks = retrieved != null ? retrieved.size() : 0;
+		int citationCount = citations != null ? citations.size() : 0;
+		boolean hasGrounding = retrievedChunks > 0 && citationCount > 0;
+		int answerLength = answer != null ? answer.length() : 0;
+
+		return Map.of("retrievedChunkCount", retrievedChunks, "citationCount", citationCount, "hasGrounding",
+				hasGrounding, "answerLength", answerLength, "responseTimeMs", responseTimeMs);
 	}
 }

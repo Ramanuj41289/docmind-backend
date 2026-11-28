@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ramanuj.docmind.config.AppProperties;
 import com.ramanuj.docmind.dto.AdminStatusDto;
 import com.ramanuj.docmind.dto.UpdateUserRoleRequest;
 import com.ramanuj.docmind.dto.UserDto;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminService {
     private final UserRepository userRepository;
+    private final AppProperties appProperties;
     
     @Transactional(readOnly = true)
     public List<UserDto> getAllUsers() {
@@ -39,6 +41,12 @@ public class AdminService {
         User user = findUser(userId);
         Role currentRole = user.getRole();
         Role newRole = request.role();
+
+        if (isHitlApprovalRequired(currentRole, newRole)
+                && !Boolean.TRUE.equals(request.approvalConfirmed())) {
+            throw new ConflictException("Approval is required for high-risk role changes");
+        }
+
         if (currentRole == newRole) {
             return toUserDto(user);
         }
@@ -51,6 +59,12 @@ public class AdminService {
         user.setRole(newRole);
         User updatedUser = userRepository.save(user);
         return toUserDto(updatedUser);
+    }
+
+    private boolean isHitlApprovalRequired(Role currentRole, Role newRole) {
+        return appProperties.getHitl().isRequireAdminRoleUpdateApproval()
+                && (currentRole == Role.ADMIN || newRole == Role.ADMIN)
+                && currentRole != newRole;
     }
 
     @Transactional(readOnly = true)

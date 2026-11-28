@@ -8,6 +8,12 @@ import jakarta.validation.constraints.NotNull;
 
 @Schema(name = "UpdateUserRoleRequest", description = "Request payload for updating a user's assigned role.")
 public record UpdateUserRoleRequest(@Schema(description = "Role to assign to the user.", example = "ADMIN", 
-		requiredMode = Schema.RequiredMode.REQUIRED)@NotNull(message = "Role is required") Role role) {
+		requiredMode = Schema.RequiredMode.REQUIRED)@NotNull(message = "Role is required") Role role,
+		@Schema(description = "Optional HITL acknowledgement for high-risk role changes.", example = "true")
+		Boolean approvalConfirmed) {
+
+	public UpdateUserRoleRequest(Role role) {
+		this(role, null);
+	}
 	
 }

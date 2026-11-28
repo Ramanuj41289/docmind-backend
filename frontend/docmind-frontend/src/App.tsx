@@ -398,6 +398,7 @@ export default function App() {
                     content: response.answer || '',
                     citations: response.citations || [],
                     responseTimeMs: response.responseTimeMs,
+                    evalMetadata: response.evalMetadata,
                     pending: false
                 });
             }

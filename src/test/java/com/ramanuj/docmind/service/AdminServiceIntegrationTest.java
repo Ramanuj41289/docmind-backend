@@ -12,6 +12,7 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
+import com.ramanuj.docmind.config.AppProperties;
 import com.ramanuj.docmind.dto.AdminStatusDto;
 import com.ramanuj.docmind.dto.UpdateUserRoleRequest;
 import com.ramanuj.docmind.dto.UserDto;
@@ -22,7 +23,7 @@ import com.ramanuj.docmind.exception.ResourceNotFoundException;
 import com.ramanuj.docmind.repository.UserRepository;
 
 @DataJpaTest
-@Import(AdminService.class)
+@Import({ AdminService.class, AppProperties.class })
 class AdminServiceIntegrationTest {
 
 	@Autowired

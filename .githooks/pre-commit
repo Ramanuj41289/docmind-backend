@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "[docs-check] validating documentation artifacts..."
+python docs/scripts/doc_generators/validate_doc_artifacts.py

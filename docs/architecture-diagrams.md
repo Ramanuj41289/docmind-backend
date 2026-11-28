@@ -147,3 +147,96 @@ flowchart LR
 ---
 
 *All diagrams use GitHub‑compatible Mermaid syntax and can be viewed directly in the repository’s markdown preview.*
+
+---
+
+## 4) Frontend Architecture Diagram
+
+```mermaid
+flowchart LR
+    %% Client shell
+    Browser[Browser]
+    ViteApp[React + TypeScript SPA\nfrontend/docmind-frontend]
+
+    %% UI layer
+    subgraph UI[UI Layer]
+        App[App.tsx]
+        Navbar[Navbar]
+        Sidebar[Sidebar]
+        ChatArea[ChatArea]
+        Modals[Upload/Search/Auth/Admin Modals]
+        Toast[Toast Notifications]
+    end
+
+    %% State and routing
+    subgraph ClientCore[Client Core]
+        Router[React Router]
+        AuthStore[authStore (Zustand)]
+        ChatStore[chatStore (Zustand)]
+        DocumentStore[documentStore (Zustand)]
+        Types[Shared TS Types]
+    end
+
+    %% API layer
+    subgraph ApiLayer[API + Transport]
+        ApiClient[docmindApi.ts]
+        Axios[Axios + JWT Interceptors]
+        Stream[Fetch SSE Stream]
+        Upload[Multipart Upload + Progress]
+    end
+
+    %% Backend
+    subgraph Backend[Spring Boot Backend]
+        AuthApi[/api/v1/auth/*]
+        DocsApi[/api/v1/documents/*]
+        ChatApi[/api/v1/chat/query]
+        ChatStreamApi[/api/v1/chat/stream]
+        SearchApi[/api/v1/chat/search/similarity]
+        ConvApi[/api/v1/chat/conversations/*]
+        AdminApi[/api/v1/admin/*]
+    end
+
+    %% Storage
+    subgraph Data[Persistence + AI]
+        Pg[(PostgreSQL)]
+        Vectors[(pgvector/vector_store)]
+        Session[(ai_session + chat_messages)]
+    end
+
+    Browser --> ViteApp --> App
+    App --> Navbar
+    App --> Sidebar
+    App --> ChatArea
+    App --> Modals
+    App --> Toast
+
+    App --> Router
+    App --> AuthStore
+    App --> ChatStore
+    App --> DocumentStore
+    App --> Types
+
+    Navbar --> ApiClient
+    Sidebar --> ApiClient
+    ChatArea --> ApiClient
+    Modals --> ApiClient
+
+    ApiClient --> Axios
+    ApiClient --> Stream
+    ApiClient --> Upload
+
+    Axios --> AuthApi
+    Axios --> DocsApi
+    Axios --> ChatApi
+    Stream --> ChatStreamApi
+    Axios --> SearchApi
+    Axios --> ConvApi
+    Axios --> AdminApi
+
+    AuthApi --> Pg
+    DocsApi --> Pg
+    ConvApi --> Pg
+    ChatApi --> Session
+    ChatStreamApi --> Session
+    SearchApi --> Vectors
+```

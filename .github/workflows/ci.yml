@@ -54,3 +54,18 @@ jobs:
 
       - name: Build frontend
         run: npm run build
+
+  docs-artifacts:
+    name: Docs Artifact Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate documentation artifacts
+        run: python docs/scripts/doc_generators/validate_doc_artifacts.py

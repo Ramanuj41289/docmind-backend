@@ -1,0 +1,502 @@
+DocMind Updation OCR Extracted Text
+Generated: 2026-11-28 14:16
+
+=== WhatsApp Image 2026-11-28 at 14.01.12.jpeg ===
+13:57A
+50
+Reels
+Harness Engineering
+Designing therightinterface,tools and context tohelpAlagents
+workeffectively andreliably.
+Howitworks
+UserGoal
+Harness
+Al Agent
+Tools&Resources
+TaskOutput
+Userprovidesa
+The harness
+The agent usesthe
+The agent accesses
+task or objective
+addsinstructions,
+harness to plan,
+external toolsAPis
+theresult to the user
+for the agent.
+tools.context and
+rules for theagent.
+reasonand take
+and data as needed
+in the rightformat.
+action.
+Feedback&Improvement
+Howitworks(StepbyStep)
+5
+Define the goal
+The user provides a clear task or objective for the agent.
+Set up the harness
+Thehaessaddsinstrutionstlscontextandulestoguid theagent
+Agent takes action
+The agent uses the haness to plan.reason and decide what to do.
+Use tools andresources
+The agontacceses xernal tools.APis and data to complete the task.
+Deliver theresult
+The agent returns the final output to the user in the right format.
+Learn and improve
+Feedback from theresult helps refine theharness for beter performance over time
+4,122
+aiwithanju
+Follow
+ugeloud·BURN FOR YOU(SI
+10.3K
+Comment"PDF"andIllsend thedetailedguide tolearnal
+Add comment...
+
+=== WhatsApp Image 2026-11-28 at 14.01.13 (1).jpeg ===
+13:57A
+Reels
+3
+ContextEngineering
+Designingandmanaging therightcontextforLLMs
+togetbetter,morerelevantandreliableresponses.
+FlowDiagram
+ContextEngineering
+Retrieve relevant data
+UserQuery
+Add tool descriptions
+LLM
+Better Response
+plana7-day
+Include systamrules
+Understands the
+Reievant, accurat
+trip to Japan with
+lull context and
+heiptul and
+#budget of $2,0
+Maintain conversation
+gonerates a response
+alined with gosls
+history
+Feedback/ContextUpdate
+HowItWorks
+Understand
+Gather Relevant
+Structure the
+Generate
+Lean&Improve
+the Goal
+Context
+Context
+Response
+The syitemanalyzes
+It retrieves useful
+jtorganizms and
+The LLMusesthe
+The system captures
+informationfrom
+formatsthe context
+providedconten
+feodbock and updates
+snd identifies what's
+intemal data, tools.
+with.crinstructions
+toprodceareevt
+the coritext for
+needod.
+or external sources.
+sonu pue gadues
+betterresults
+forteLLM
+output.
+in the future.
+aiwithanju
+Follow
+10.3K
+Alcontent
+Comment“PDF"and I'll send the detailed guide tolearn al
+Add comment...
+
+=== WhatsApp Image 2026-11-28 at 14.01.13 (2).jpeg ===
+13:57A
+Reels
+Tool Design
+InAgenticAl,tool design defines how the agent can
+useexternal tools toperform actions and getreal-worldinformation.
+FlowDiagram
+Tool Library
+Weather API
+User Request
+Agent
+SesrchTool
+ToolExecution
+"Check the weather
+Understandsthe goal
+Database Tool
+Agent calls the tool
+inMumba"
+with theright parameters
+and gets the result.
+Response to User
+Agent uses the result
+to providehelofu answer.
+HowItWorks
+User Request
+weather or searching for information.
+Agent Decision
+The agentunderstands therequest and decides which tool
+isnceded to complete the task.
+Tool Library
+The agent looks at the available tools,picks the right one,
+(saeed)ndupanbaia sadadpue
+Tool Execution
+The agent calls the tool (e.g.an APi or database),runs the action,
+and gets the result.
+The agentuses theresulto createa clearandhelpfuresponse
+Response to User
+forthe user.
+4,122
+aiwithanju
+Follow
+10.3K
+Alcontent
+Comment“PDF"andI'll sendthedetailed guide tolearn al
+Add comment...
+
+=== WhatsApp Image 2026-11-28 at 14.01.13.jpeg ===
+13:57A
+50
+Reels
+LoopEngineering
+Build Al agents that learn and improve throughcontinuous loops.
+FlowDiagram
+1.Goal/Task
+Uset givesa task or goal
+to the agent.
+2.Plan
+5.Learn&Improve
+The gent breks the goal
+The agent refects on what
+i stepsandcesaan
+workedupdatesitsplan
+and makes better decisions.
+Continuous
+Loop
+3.Act
+Theagentexcutes the pian
+4.Observe
+using toosAPis rctions.
+The agetchk th
+gathersfacknvs
+progren
+Howitworks
+5
+Set the goal
+The userprovidesa task or objective forthe agent to achieve.
+Plan and decide
+The agent analyzes the goal breaks it into steps and creates
+an action plan.
+Execute actions
+The agent uses toolsAPis or other resources to carry out
+the plan.
+Check and evaluate
+The agentreviewstheresuilthecksfrerrorsnd
+measures progress.
+Learn andimprove
+Theagentrefects onthe outcomeupdatesitslan
+and repeats the loop for better results.
+aiwithanju
+Follow
+10.3K
+ud·BURN FOR YOU(SloWec
+Comment“PDF"and Ill send the detailed guide tolearn al
+Add comment...
+
+=== WhatsApp Image 2026-11-28 at 14.01.14 (1).jpeg ===
+13:57A
+5050
+Reels
+OrchestrationPatterns
+DifferentwaystocoordinatemultipleAl agentsto solvecomplextasks.
+FlowDiagram
+Agent Team
+Research Agent
+Gathers information
+Assigns
+Tasks
+Task/Goal
+Coding Agent
+Final
+Writeandecutscode
+Output
+Orchestrator
+User
+Result
+Plans,assigns task
+Provides a goal
+Returms
+Analysis Agent
+Complete solution
+ortask
+andmanages fiow.
+Results
+Analzesreulls
+orresporse
+PlanningAgent
+Brek dowmcomlets
+HowItWorks
+Understand the Task
+Theuserprovidesagoal orcomplextask,and the
+orchestratorbreaksit down into smaller steps.
+Assign to Agents
+The orchestrator selects the right agents and
+assigns each step or subtask to them.
+Agentsworkinprallelorsequence,shareresults
+Coordinate&Monitor
+with the orchestrator,and get furtherinstructions
+ifneeded.
+DeliverFinal Output
+The orchestratorcombinestheresults,verifiesthe
+output andreturns thefinal solution to the user.
+aiwithanju
+Follow,
+10.3K
+Alcontent
+Comment"PDFandI'llsendthedetailedguidetolearnal
+Add comment...
+
+=== WhatsApp Image 2026-11-28 at 14.01.14 (2).jpeg ===
+13:57A
+0850
+Reels
+Guardrails&Permissions
+FlowDiagram
+User
+Guardrails
+Permissions
+Agent
+Sendsarequest
+Checks for safety,
+Verifies user access
+Executes therequest
+to the agent
+policy and contentrules
+and allowed actions
+within allowed limits
+Response
+Tools/Data
+Returns safe and
+Accesses only
+controlled output
+permittedresources
+HowItWorks
+The agentfirst checkstherequestagainst
+Guardrails Check
+safetyrules,content policies andethicalguidelines
+toprevent harmful or inappropriate actions.
+Next,it verifies the user'sidentity and permissions
+PermissionsVerify
+to ensure theyhave access to therequired tools,
+apps or data.
+ifeverything isvalid,the agent proceeds
+3
+Agent Executes
+with the task,using onlythe allowed actions
+andresources.
+SafeOutcome
+The result isreturned to the user as a safe,
+compliant and controlled response.
+aiwithanju
+Follow
+10.3K
+/ISTED,Hugeloud·BURNFO
+Comment“PDF"and I'll send the detailed guide to learn al
+Add comment...
+
+=== WhatsApp Image 2026-11-28 at 14.01.14.jpeg ===
+13:57A
+50350
+Reels
+MemoryArchitecture
+FlowDiagram
+MemorySystem
+2.Retrieve relevant
+memories
+Short-term Memory
+1.lnput/Query
+(current session)
+User
+Agent
+3.Relevant context
+Long-termMemory
+(past interactions)
+4.Generate response
+(usingmemory+toos)
+Knowledge Base
+(external information)
+Response
+HowItWorks
+UserInput
+The user provides aquery or instruction to the agent.
+Theagentunderstandstheintentandidentifies whatinfomation
+it needs.
+RetrieveMemory
+The agent searchesthememorysystem forrelevantcontext
+from short-termmemory,long-term memory and knowledge base.
+This gives the agent past context and useful information.
+Use Context
+The retrievedmemories areadded to the current prompt.
+The agentusesthiscontext tomake betterandmoreinformeddecisions.
+GenerateResponse
+The agent processes theinput withthe context(and toolsifneeded)
+It generates arelevantand accurateresponse.
+Update Memory
+The agent storesusefulinformationfrom thisinteraction.
+Thishelpitmproeoetieandprovidebetrresponsesthefuure
+aiwithanju
+Follow
+Alcontent
+10.3K
+Comment"PDF"and Ill send the detailed guide tolearnal
+Add comment...
+
+=== WhatsApp Image 2026-11-28 at 14.01.15 (1).jpeg ===
+13:57A
+50
+Reels
+Human-in-the-Loop Design
+CombininghumanjudgmentwithAltomakebetter,
+saferandmore reliable decisions.
+FlowDiagram
+Human
+AIAgent
+Output
+Providesgoals,context
+Analyzes,makes ecision
+Result or recommendation
+and initial input
+and takes action
+isproduced
+Human Review
+Checks,validatesand
+providesfeedback
+HowItWorks
+Human sets the goal
+The human defines the objective,provides
+context and shares any constraints or preferences.
+Alagent takes action
+The Al processes theinput,plans the next steps,
+executes the task and generates an output.
+Human reviews theresult
+The human checks the output for accuracy.
+safety andquality.andprovidesfeedback
+ormakes adjustments.
+Iterate andimprove
+The feedback is used to refine the Al'sresponse,
+leading to better results over time.
+aiwithanju
+Follow
+10.3K
+geloud·BURNFORYOUSTo
+Comment“PDF"andI'llsendthedetailedguidetolearnal
+Add comment...
+
+=== WhatsApp Image 2026-11-28 at 14.01.15 (2).jpeg ===
+13:57A
+50
+Reels
+10
+Observability&Tracing
+Getfullvisibility intoyouragenticAlsystems-understandwhat
+happenswhyithappens,and where tomprove.
+FlowDiagram
+Instrumentation
+Agentic AI System
+.Capture logs
+Observability Platform
+User
+(Orchestrator+Agents+
+Collect metrics
+Generate traces
+(Logs·Mtrics+Traces)
+Tools)
+Better Decisions
+MonitoringAnalysis
+&Improvements
+(Optimizeagents.toot
+Findissues
+workflows)
+Analyzeperfomanc
+.Getinsights
+HowItWorks
+User Request
+A user sends a request to the agentic Al system
+(eg.a complex taskorgoal)
+Execution&Instrumentation
+The agent and its tools cxecute the task while
+instrumentationcaptueslogs.metiesand traces
+ateach step.
+Data Collection
+Observabity platfom storesthe collecteddata
+and buildsacomplete view f the request flow
+across agents and tools.
+Monitoring&Analysis
+You analyze logsmetrics and traces to find rror,
+understand peoncendidentifybotennc
+Improvement
+Insights help you optimizeagents.tools andworkfiows
+for bettrlltyfoacenoes
+4122
+aiwithanju
+Follow
+10.3K
+Alcontent
+Comment“PDF"and Ill send the detailed guide to learn al
+Addcomment...
+
+=== WhatsApp Image 2026-11-28 at 14.01.15.jpeg ===
+13:57A
+50
+Reels
+8
+EvalsforAgents
+FlowDiagram
+UserQuery
+Agent
+Evaluation(Evals)
+Results
+(task/goal)
+(uses tools,
+(check qualty.
+(pass/tal+
+plans,acts)
+accuracy.safety,et)
+metrics)
+Feedback&Improvement
+(refine prompts,tols
+policies)
+HowItWorks
+Define the task
+Youprovidea userquery orgoaland the agent decideswhat to do
+5
+including which tools to use and the stepsto take.
+Run the agent
+The agent executesthe task by using tools and reasoning through
+the steps to get the result.
+Evaluate the output
+and other criteria using predefined rules ormetrics.
+Getfeedback
+Theresults are analyzed,and feedback is used to improve prompts,
+toolsorpoliciesforbetterperfrmance
+Iterate andimprove
+5
+Theagentleans fromthefeedbackand getsrefined overtime,
+leading tomore reliable and heipful results.
+aiwithanju
+Follow
+10.3K
+D,Hugeloud·BURNFORYOL
+Comment"PDF"andIllsend thedetailed guide to learn al
+Add comment...
+
